@@ -12,7 +12,13 @@ const levelsRouter = require('./routes/levels')
 
 const app = express();
 
-mongoose.connect(process.env.DATABASE_URL, {useUnifiedTopology: true, useNewUrlParser: true })
+mongoose.connect(process.env.DATABASE_URL, {
+    useUnifiedTopology: true,
+    useNewUrlParser: true,
+    "auth": { "authSource": process.env.MONGO_AUTHSOURCE },
+    "user": process.env.MONGO_USERNAME,
+    "pass": process.env.MONGO_PASSWORD,
+})
 const db = mongoose.connection
 db.on('error', (error) => console.error(error))
 db.once('open', () => console.log('connected to database'))
