@@ -23,10 +23,17 @@ exports.all = async function(_req, res) {
 
 // Get specific user details from the database
 exports.details = function(req, res) {
-    res.json({
-        success: true,
-        message: res.user,
-    })
+    try {
+        res.status(200).json({
+            success: true,
+            message: res.user,
+        })
+    } catch (error) {
+        res.status(500).json({
+            success: false,
+            message: error.message,
+        })
+    }
 }
 
 // Creating new entries in the persistence mechanism
@@ -198,7 +205,7 @@ exports.delete = async function (req, res) {
         })
     } catch(err) {
         res.status(500).json({
-            success: true,
+            success: false,
             message: err.message,
         })
     }
