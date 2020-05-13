@@ -1,5 +1,6 @@
 # Variables
 @baseUrl = http://localhost:3000/api/v1/users
+@int = {{$randomInt 1000 9999}}
 
 ### Get all users
 GET {{baseUrl}}/ HTTP/1.1
@@ -11,13 +12,13 @@ Content-Type: application/json
 Authorization: {{authToken}}
 
 {
-    "firstname": "New",
+    "firstname": "{{int}}User",
     "middlename": "Test",
     "lastname": "User",
-    "email": "new@example.com",
-    "password": "New2020!",
+    "email": "{{int}}@example.com",
+    "password": {{int}},
     "joinDate": "2018-01-01",
-    "phone": "0755123456",
+    "phone": "0755{{int}}00",
     "level": "member"
 }
 
