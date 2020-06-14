@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
     salt: String,
     saltRounds: String,
     lastLogin: Date,
+    tokenExpiry: Date,
     status: Boolean,
     person: {
         firstname: String,

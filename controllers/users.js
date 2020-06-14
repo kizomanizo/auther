@@ -4,6 +4,8 @@ const Level = require('../models/level');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const variables = require('../config/variables');
+const ms = require('ms');
+const tokenExpiry = new Date (Date.now() + ms(variables.expiration));
 
 // List all the users in the database
 exports.all = async function(_req, res) {
@@ -60,6 +62,7 @@ exports.create = function(req, res) {
                 salt: salt,
                 saltRounds: saltRounds,
                 lastLogin: null,
+                tokenExpiry: null,
                 status: 0,
                 person: {
                     firstname: req.body.firstname,
@@ -100,14 +103,16 @@ exports.login = async function(req, res) {
         if (match) {
             let token = jwt.sign({email: req.body.email},
                 variables.secret, {
-                    expiresIn: '60d' // it can be 1m, 2h, 1y, 6000(1 minute), etc.
+                    expiresIn: variables.expiration, // it can be 1m, 2h, 60d, 1y, 6000(1 minute), etc.
                 });
+            res.user.tokenExpiry = tokenExpiry;
             res.user.lastLogin = Date();
             res.user.save();
             res.json({
                 success: true,
                 message: 'Authentication successful!',
                 token: token,
+                expiry: tokenExpiry,
             });
         }
         else {
@@ -120,6 +125,8 @@ exports.login = async function(req, res) {
         res.status(401).send({
             success: false,
             message: err.message,
+            password: user.password,
+            userEmail: user.email,
         })
     }
 }
